@@ -1,0 +1,42 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/UI/hud.gd" id="1_hud"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="LevelLabel" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 20.0
+offset_right = 932.0
+offset_bottom = 72.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 34
+text = "Nivel 1"
+
+[node name="HintLabel" type="Label" parent="."]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -84.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 34
+text = "Arrastra hacia atrás y suelta para golpear  ·  El cronómetro empieza con el primer tiro"
+horizontal_alignment = 1
+
+[node name="BombTimer" type="Label" parent="."]
+offset_right = 120.0
+offset_bottom = 46.0
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 32
+text = "30.0"
+horizontal_alignment = 1
+vertical_alignment = 1

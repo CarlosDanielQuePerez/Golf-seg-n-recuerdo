@@ -1,0 +1,80 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Gameplay/level.gd" id="1_08vl7"]
+[ext_resource type="TileSet" path="res://Assets/Tilesets/tileset.tres" id="2_pt0sv"]
+[ext_resource type="Script" path="res://Scripts/Gameplay/hazard_layer.gd" id="3_t788b"]
+[ext_resource type="PackedScene" path="res://Scenes/Gameplay/bomb.tscn" id="4_f11tu"]
+[ext_resource type="PackedScene" path="res://UI/hud.tscn" id="5_ykvih"]
+[ext_resource type="PackedScene" path="res://UI/pause_menu.tscn" id="6_rp22a"]
+[ext_resource type="PackedScene" path="res://UI/victory_screen.tscn" id="7_cow3m"]
+[ext_resource type="PackedScene" path="res://UI/defeat_screen.tscn" id="8_36ddn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x3xif"]
+size = Vector2(1280, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1sss4"]
+size = Vector2(1280, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_agagt"]
+size = Vector2(64, 640)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qauki"]
+size = Vector2(64, 640)
+
+[node name="Level5" type="Node2D" unique_id=1109603753]
+script = ExtResource("1_08vl7")
+level_id = 5
+
+[node name="Ground" type="TileMapLayer" parent="." unique_id=1168141625]
+tile_set = ExtResource("2_pt0sv")
+
+[node name="Course" type="TileMapLayer" parent="." unique_id=1113206301]
+tile_set = ExtResource("2_pt0sv")
+
+[node name="Sand" type="TileMapLayer" parent="." unique_id=1222339680]
+tile_set = ExtResource("2_pt0sv")
+script = ExtResource("3_t788b")
+
+[node name="Water" type="TileMapLayer" parent="." unique_id=374325550]
+tile_set = ExtResource("2_pt0sv")
+script = ExtResource("3_t788b")
+
+[node name="Bounds" type="StaticBody2D" parent="." unique_id=1039291806]
+
+[node name="Top" type="CollisionShape2D" parent="Bounds" unique_id=1699665968]
+position = Vector2(576, -32)
+shape = SubResource("RectangleShape2D_x3xif")
+
+[node name="Bottom" type="CollisionShape2D" parent="Bounds" unique_id=1200847969]
+position = Vector2(576, 672)
+shape = SubResource("RectangleShape2D_1sss4")
+
+[node name="Left" type="CollisionShape2D" parent="Bounds" unique_id=1466771819]
+position = Vector2(-32, 320)
+shape = SubResource("RectangleShape2D_agagt")
+
+[node name="Right" type="CollisionShape2D" parent="Bounds" unique_id=608309858]
+position = Vector2(1184, 320)
+shape = SubResource("RectangleShape2D_qauki")
+
+[node name="Start" type="Marker2D" parent="." unique_id=344098241]
+position = Vector2(576, 320)
+
+[node name="Bomb" parent="." unique_id=1685024410 instance=ExtResource("4_f11tu")]
+position = Vector2(576, 320)
+
+[node name="AimLine" type="Line2D" parent="." unique_id=1582489541]
+width = 3.0
+default_color = Color(1, 1, 1, 0.9)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=694423229]
+position = Vector2(576, 320)
+zoom = Vector2(1.6666666, 1.6666666)
+
+[node name="HUD" parent="." unique_id=1400727694 instance=ExtResource("5_ykvih")]
+
+[node name="PauseMenu" parent="." unique_id=302798385 instance=ExtResource("6_rp22a")]
+
+[node name="VictoryScreen" parent="." unique_id=2083343375 instance=ExtResource("7_cow3m")]
+
+[node name="DefeatScreen" parent="." unique_id=889753716 instance=ExtResource("8_36ddn")]
