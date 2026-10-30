@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://Scripts/UI/main_menu.gd" id="1_menu"]
+[ext_resource type="AudioStream" uid="uid://6ldvstihigpw" path="res://Assets/Audio/menu_theme.mp3" id="2_music"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -59,13 +60,14 @@ size_flags_horizontal = 4
 theme_override_constants/separation = 20
 
 [node name="SensitivityLabel" type="Label" parent="Center/VBox/Sensitivity"]
+custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Sensibilidad del ratón"
 
 [node name="SensitivitySlider" type="HSlider" parent="Center/VBox/Sensitivity"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(360, 40)
+custom_minimum_size = Vector2(260, 40)
 layout_mode = 2
 size_flags_vertical = 4
 min_value = 0.5
@@ -79,6 +81,42 @@ custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "1.0x"
+
+[node name="MusicControls" type="HBoxContainer" parent="Center/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 20
+
+[node name="MusicLabel" type="Label" parent="Center/VBox/MusicControls"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Volumen música"
+
+[node name="VolumeSlider" type="HSlider" parent="Center/VBox/MusicControls"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 40)
+layout_mode = 2
+size_flags_vertical = 4
+min_value = 0.0
+max_value = 100.0
+step = 5.0
+value = 80.0
+
+[node name="VolumeValue" type="Label" parent="Center/VBox/MusicControls"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "80%"
+
+[node name="MuteButton" type="Button" parent="Center/VBox/MusicControls"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 44)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 22
+text = "Silenciar"
 
 [node name="QuitButton" type="Button" parent="Center/VBox"]
 unique_name_in_owner = true
@@ -94,3 +132,9 @@ theme_override_colors/font_color = Color(0.75, 0.75, 0.85, 1)
 theme_override_font_sizes/font_size = 26
 text = "Arrastra hacia atrás y suelta para golpear  ·  Mete la bomba antes de que explote  ·  Esc = pausa"
 horizontal_alignment = 1
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_music")
+volume_db = -6.0
+autoplay = true
+bus = &"Master"

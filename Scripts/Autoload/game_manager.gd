@@ -17,6 +17,10 @@ const MAX_SENSITIVITY := 2.0
 var unlocked_level := 1          # nivel más alto que se puede jugar
 var best_stars := {}             # level_id -> mejor número de estrellas (1 a 3)
 var mouse_sensitivity := 1.0     # multiplica la distancia del ratón al calcular la fuerza
+var music_volume := 80.0          # volumen de música (0 a 100)
+var music_muted := false          # si la música está silenciada
+
+signal music_settings_changed
 
 @onready var ui_click_sound: AudioStreamPlayer = $UIClickSound
 
@@ -86,6 +90,18 @@ func set_mouse_sensitivity(value: float) -> void:
 	save_game()
 
 
+func set_music_volume(value: float) -> void:
+	music_volume = clampf(value, 0.0, 100.0)
+	save_game()
+	music_settings_changed.emit()
+
+
+func set_music_muted(value: bool) -> void:
+	music_muted = value
+	save_game()
+	music_settings_changed.emit()
+
+
 # --- Sonido de interfaz ----------------------------------------------------
 
 func play_ui_click() -> void:
@@ -105,6 +121,8 @@ func save_game() -> void:
 	for level_id in best_stars:
 		cfg.set_value("best_stars", "level_%d" % level_id, best_stars[level_id])
 	cfg.set_value("settings", "mouse_sensitivity", mouse_sensitivity)
+	cfg.set_value("settings", "music_volume", music_volume)
+	cfg.set_value("settings", "music_muted", music_muted)
 	cfg.save(SAVE_PATH)
 
 
@@ -120,3 +138,5 @@ func load_game() -> void:
 			best_stars[level_id] = clampi(stars, 1, 3)
 	mouse_sensitivity = clampf(cfg.get_value("settings", "mouse_sensitivity", 1.0),
 			MIN_SENSITIVITY, MAX_SENSITIVITY)
+	music_volume = clampf(cfg.get_value("settings", "music_volume", 80.0), 0.0, 100.0)
+	music_muted = bool(cfg.get_value("settings", "music_muted", false))

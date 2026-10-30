@@ -48,6 +48,7 @@ var _loss_reason := ""
 @onready var pause_menu: PauseMenu = $PauseMenu
 @onready var victory_screen: VictoryScreen = $VictoryScreen
 @onready var defeat_screen: DefeatScreen = $DefeatScreen
+@onready var music_player: AudioStreamPlayer = get_node_or_null("MusicPlayer")
 
 
 func _ready() -> void:
@@ -61,6 +62,8 @@ func _ready() -> void:
 	bomb.explosion_finished.connect(_on_explosion_finished)
 	hud.setup(bomb, GameManager.level_title(level_id))
 	hud.set_time(time_left)
+	_apply_music_settings()
+	GameManager.music_settings_changed.connect(_apply_music_settings)
 
 
 func _setup_camera() -> void:
@@ -164,3 +167,13 @@ func _on_water_entered(b: Bomb) -> void:
 
 func _on_explosion_finished() -> void:
 	defeat_screen.show_result(_loss_reason)
+
+
+func _apply_music_settings() -> void:
+	if not music_player:
+		return
+	if GameManager.music_muted or GameManager.music_volume <= 0.0:
+		music_player.volume_db = -80.0
+	else:
+		var linear: float = (GameManager.music_volume / 100.0) * 0.5
+		music_player.volume_db = linear_to_db(linear)

@@ -42,6 +42,41 @@ theme_override_font_sizes/font_size = 64
 text = "Pausa"
 horizontal_alignment = 1
 
+[node name="MusicControls" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="MusicLabel" type="Label" parent="Center/Panel/Margin/VBox/MusicControls"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Música"
+
+[node name="VolumeSlider" type="HSlider" parent="Center/Panel/Margin/VBox/MusicControls"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(170, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 0.0
+max_value = 100.0
+step = 5.0
+value = 80.0
+
+[node name="VolumeValue" type="Label" parent="Center/Panel/Margin/VBox/MusicControls"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "80%"
+
+[node name="MuteButton" type="Button" parent="Center/Panel/Margin/VBox/MusicControls"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 40)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 20
+text = "Silenciar"
+
 [node name="ContinueButton" type="Button" parent="Center/Panel/Margin/VBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(440, 80)
