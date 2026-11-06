@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" path="res://UI/pause_menu.tscn" id="7_eqosv"]
 [ext_resource type="PackedScene" path="res://UI/victory_screen.tscn" id="8_6a7cf"]
 [ext_resource type="PackedScene" path="res://UI/defeat_screen.tscn" id="9_hpjhc"]
+[ext_resource type="AudioStream" uid="uid://cmnkrog2u7dpb" path="res://Assets/Audio/level2_theme.mp3" id="10_music"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_56d2c"]
 size = Vector2(1280, 64)
@@ -107,3 +108,11 @@ zoom = Vector2(1.6666666, 1.6666666)
 [node name="VictoryScreen" parent="." unique_id=25443444 instance=ExtResource("8_6a7cf")]
 
 [node name="DefeatScreen" parent="." unique_id=1058214948 instance=ExtResource("9_hpjhc")]
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("10_music")
+volume_db = -6.0
+autoplay = true
+bus = &"Master"
+

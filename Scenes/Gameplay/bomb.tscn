@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/Gameplay/bomb.gd" id="1_bomb"]
 [ext_resource type="Script" path="res://Scripts/Gameplay/placeholder_circle.gd" id="2_circle"]
+[ext_resource type="AudioStream" uid="uid://dur3avfyyl6rk" path="res://Assets/Audio/explosion.wav" id="3_explosion"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_bomb"]
 radius = 5.0
@@ -169,6 +170,8 @@ libraries = {
 [node name="BounceSound" type="AudioStreamPlayer" parent="."]
 
 [node name="ExplosionSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_explosion")
+volume_db = -9.0
 
 [node name="SplashSound" type="AudioStreamPlayer" parent="."]
 

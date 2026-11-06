@@ -10,6 +10,7 @@ enum State { READY, PLAYING, WON, LOST }
 
 const HOLE_TILE := Vector2i(0, 9)        # tile de la bandera en el tileset
 const HOLE_OFFSET := Vector2(0, 7)       # el hoyo queda un poco abajo del centro del tile
+const CROCODILE_SCENE := preload("res://Scenes/Gameplay/crocodile.tscn")
 
 @export var level_id := 1
 
@@ -161,8 +162,101 @@ func _lose(reason: String) -> void:
 func _on_water_entered(b: Bomb) -> void:
 	if state == State.WON or state == State.LOST:
 		return
-	_lose("¡La bomba cayó al agua!")
-	b.explode(true)
+	_lose("¡Un cocodrilo se tragó la bomba!")
+	_play_crocodile_sequence(b)
+
+
+func _play_crocodile_sequence(b: Bomb) -> void:
+	b.stop()
+	b.set_physics_process(false)
+	b.collision_layer = 0
+	b.collision_mask = 0
+
+	var pond_rect := _get_water_bounds_near(b.position)
+	var pond_center := pond_rect.get_center()
+
+	# Asegurar que la posición inicial de la bomba quede dentro de los límites del agua
+	if pond_rect.size != Vector2.ZERO:
+		b.position.x = clampf(b.position.x, pond_rect.position.x + 8.0, pond_rect.end.x - 8.0)
+		b.position.y = clampf(b.position.y, pond_rect.position.y + 8.0, pond_rect.end.y - 8.0)
+
+	var croc: Node2D = CROCODILE_SCENE.instantiate()
+
+	# Orientación: si la bomba está a la izquierda del centro del agua, mira a la izquierda; si no, a la derecha.
+	var facing_left := (b.position.x < pond_center.x)
+	croc.scale.x = -1.0 if facing_left else 1.0
+
+	# Ajustar posición del cocodrilo con márgenes suficientes para que NUNCA toque el pasto exterior
+	var croc_x := b.position.x
+	var croc_y := b.position.y
+	if pond_rect.size != Vector2.ZERO:
+		if facing_left:
+			croc_x = clampf(b.position.x, pond_rect.position.x + 12.0, pond_rect.end.x - 28.0)
+		else:
+			croc_x = clampf(b.position.x, pond_rect.position.x + 28.0, pond_rect.end.x - 12.0)
+
+		var min_y_margin := minf(18.0, pond_rect.size.y * 0.3)
+		croc_y = clampf(b.position.y, pond_rect.position.y + min_y_margin, pond_rect.end.y - min_y_margin)
+
+	croc.position = Vector2(croc_x, croc_y)
+
+	# Si la bomba cayó en la orilla, el agua la desliza suavemente hacia las fauces del cocodrilo
+	var tween := create_tween()
+	tween.tween_interval(0.15)
+	tween.tween_property(b, "position", croc.position, 0.45).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+	add_child(croc)
+	croc.finished.connect(func() -> void:
+		_on_explosion_finished()
+		croc.queue_free()
+	)
+	croc.start_sequence(b)
+
+
+func _get_water_bounds_near(pos: Vector2) -> Rect2:
+	if not water:
+		return Rect2(pos, Vector2.ZERO)
+	var used_cells := water.get_used_cells()
+	if used_cells.is_empty():
+		return Rect2(pos, Vector2.ZERO)
+
+	var closest_cell := used_cells[0]
+	var min_d_sq := INF
+	for c in used_cells:
+		var c_world := water.to_global(water.map_to_local(c))
+		var d_sq := pos.distance_squared_to(c_world)
+		if d_sq < min_d_sq:
+			min_d_sq = d_sq
+			closest_cell = c
+
+	var pond_cells: Array[Vector2i] = []
+	var queue: Array[Vector2i] = [closest_cell]
+	var visited := {closest_cell: true}
+	var cell_set := {}
+	for c in used_cells:
+		cell_set[c] = true
+
+	while not queue.is_empty():
+		var current: Vector2i = queue.pop_back()
+		pond_cells.append(current)
+		for offset in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+			var neighbor: Vector2i = current + offset
+			if neighbor in cell_set and not visited.has(neighbor):
+				visited[neighbor] = true
+				queue.append(neighbor)
+
+	var tile_size := Vector2(water.tile_set.tile_size) if water.tile_set else Vector2(32, 32)
+	var half_tile := tile_size * 0.5
+	var min_pt := Vector2(INF, INF)
+	var max_pt := Vector2(-INF, -INF)
+	for c in pond_cells:
+		var c_world := water.to_global(water.map_to_local(c))
+		min_pt.x = minf(min_pt.x, c_world.x - half_tile.x)
+		min_pt.y = minf(min_pt.y, c_world.y - half_tile.y)
+		max_pt.x = maxf(max_pt.x, c_world.x + half_tile.x)
+		max_pt.y = maxf(max_pt.y, c_world.y + half_tile.y)
+
+	return Rect2(min_pt, max_pt - min_pt)
 
 
 func _on_explosion_finished() -> void:
